@@ -6,6 +6,15 @@ from abc import (
 from seedwork.exceptions import AppException
 
 
+DEFAULT_ERROR_CONTENT = {
+    "application/json": {
+        "example": {
+            "detail": "string"
+        }
+    }
+}
+
+
 class DeliveryException(
     AppException,
     ABC,

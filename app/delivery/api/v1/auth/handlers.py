@@ -16,6 +16,7 @@ from delivery.api.v1.auth.schemas import (
     LoginInSchema,
     LoginOutSchema,
 )
+from delivery.exceptions.base import DEFAULT_ERROR_CONTENT
 from modules.auth.application.use_cases.register import (
     RegisterUseCase,
     RegisterCommand,
@@ -37,7 +38,18 @@ router = APIRouter(
     path="/register",
     response_model=RegisterOutSchema,
     status_code=HTTP_201_CREATED,
-    summary="",
+    summary="Регистрация нового пользователя и выдача JWT токена",
+    description="Создаёт нового пользователя в системе, сохраняет его данные и устанавливает access_token cookie.",
+    responses={
+        400: {
+            "description": "Value error",
+            "content": DEFAULT_ERROR_CONTENT
+        },
+        409: {
+            "description": "User already exists",
+            "content": DEFAULT_ERROR_CONTENT
+        },
+    }
 )
 @inject
 async def register(
@@ -72,7 +84,22 @@ async def register(
     path="/login",
     response_model=LoginOutSchema,
     status_code=HTTP_200_OK,
-    summary="",
+    summary="Аутентификация пользователя и получение JWT токена",
+    description="Проверяет email и пароль, возвращает JWT токен и устанавливает access_token cookie.",
+    responses={
+        400: {
+            "description": "Value error",
+            "content": DEFAULT_ERROR_CONTENT
+        },
+        401: {
+            "description": "Invalid password error", 
+            "content": DEFAULT_ERROR_CONTENT
+        },
+        404: {
+            "description": "User not found", 
+            "content": DEFAULT_ERROR_CONTENT
+        },
+    }
 )
 @inject
 async def login(
