@@ -1,7 +1,7 @@
 from modules.event.domain.aggregate.event_registration import EventRegistration
 from modules.event.infra.pg.models import EventRegistrationOrm
 from seedwork.domain.mapper import BaseMapper
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 class EventRegistrationMapper(BaseMapper):

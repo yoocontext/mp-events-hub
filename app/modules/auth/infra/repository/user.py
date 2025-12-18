@@ -12,7 +12,7 @@ from modules.auth.application.mappers.user import UserMapper
 from modules.auth.domain.aggregate.user import User
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.infra.pg.models.user import UserAuthOrm
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.user import (
     EmailValue,
     NameValue,

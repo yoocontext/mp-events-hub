@@ -10,7 +10,7 @@ from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.application.use_case import BaseUseCase
 from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.value_objects.user import EmailValue
-from seedwork.infra.event_bus.base import IEventBus
+from seedwork.application.interface.event_bus import IEventBus
 
 
 @dataclass

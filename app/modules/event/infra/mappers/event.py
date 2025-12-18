@@ -7,7 +7,7 @@ from modules.event.infra.pg.models.event import EventOrm
 from modules.event.domain.aggregate.event import Event
 from modules.event.infra.mappers.address import AddressMapper
 from seedwork.domain.mapper import BaseMapper
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.s3 import S3IdValue
 
 

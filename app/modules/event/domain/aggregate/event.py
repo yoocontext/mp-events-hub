@@ -7,6 +7,7 @@ from modules.event.domain.aggregate.exceptions import (
     DeleteNotAllowed,
     OrganizerCannotDeleteForeignEvent,
 )
+from modules.event.domain.events.event import CreateEventEvent
 from modules.event.domain.value_objects.address import (
     AddressValue,
     CityValue,
@@ -23,14 +24,17 @@ from modules.event.domain.value_objects.event import (
 )
 from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.aggregate.base import BaseAggregate
+from seedwork.domain.aggregate.exceptions import AggregateAlreadyCreatedException
+from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.events.events import DeleteEventEvent
 from seedwork.domain.marker import EMPTY
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.uuid7 import uuid7_native
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.value_objects.s3 import S3IdValue
 
 
-@dataclass
+@dataclass(init=False)
 class Event(BaseAggregate):
     created_by_user_id: EntityIdValue
     title: TitleValue
@@ -39,9 +43,8 @@ class Event(BaseAggregate):
     description: DescriptionValue
     image_id: S3IdValue
 
-    @classmethod
     def create(
-        cls,
+        self,
         created_by_user_id: UUID,
         title: str,
         scheduled_at: datetime,
@@ -52,7 +55,7 @@ class Event(BaseAggregate):
         building_number: int | None,
         block: str | None,
         auditorium: str | None,
-    ) -> "Event":
+    ) -> None:
         dt_now: datetime = datetime.now(tz=timezone.utc)
 
         if scheduled_at < dt_now:
@@ -65,34 +68,60 @@ class Event(BaseAggregate):
                 building_number=building_number,
             )
 
-        address_vo: AddressValue | None = None
+        if self._version.value != 0:
+            raise AggregateAlreadyCreatedException()
 
-        if city and street and building_number is not None:
-            block_vo: BuildingBlockValue | None = (
-                BuildingBlockValue(block)) if block else None
+        next_agg_version: int = self._version.value + 1
+        event = CreateEventEvent(
+            aggregate_id=uuid7_native(),
+            aggregate_version=next_agg_version,
+            created_by_user_id=created_by_user_id,
+            title=title,
+            scheduled_at=scheduled_at,
+            description=description,
+            image_id=image_id,
+            city=city,
+            street=street,
+            building_number=building_number,
+            block=block,
+            auditorium=auditorium,
+        )
 
-            auditorium_vo: AuditoriumValue | None = (
-                AuditoriumValue(auditorium)) if auditorium else None
+        self._apply(event=event)
 
-            building_vo = BuildingValue(
-                number=BuildingNumberValue(_value=building_number),
-                block=block_vo,
-                auditorium=auditorium_vo,
-            )
+    def _apply(self, event: DomainEvent) -> None:
+        self._events.append(event)
+        self._when(event=event)
+        self._bump_version()
 
-            address_vo = AddressValue(
-                city=CityValue(_value=city),
-                street=StreetValue(_value=street),
-                building=building_vo,
-            )
+    def _when(self, event: DomainEvent) -> None:
+        if isinstance(event, CreateEventEvent):
+            self._set_id(event.aggregate_id)
+            self._set_version(event.aggregate_version)
+            self.created_at = event.created_at
+            self.created_by_user_id = EntityIdValue(event.created_by_user_id)
+            self.title = TitleValue(event.title)
+            self.scheduled_at = ScheduledAtValue(event.scheduled_at)
+            self.description = DescriptionValue(event.description)
+            self.image_id = S3IdValue(event.image_id)
+            self.address = self._build_address(event)
 
-        return Event(
-            created_by_user_id=EntityIdValue(created_by_user_id),
-            title=TitleValue(title),
-            scheduled_at=ScheduledAtValue(scheduled_at),
-            address=address_vo,
-            description=DescriptionValue(description),
-            image_id=S3IdValue(image_id),
+    @staticmethod
+    def _build_address(event: CreateEventEvent) -> AddressValue | None:
+        if not (event.city and event.street and event.building_number is not None):
+            return None
+
+        block_vo = BuildingBlockValue(event.block) if event.block else None
+        auditorium_vo = AuditoriumValue(event.auditorium) if event.auditorium else None
+        building_vo = BuildingValue(
+            number=BuildingNumberValue(event.building_number),
+            block=block_vo,
+            auditorium=auditorium_vo,
+        )
+        return AddressValue(
+            city=CityValue(event.city),
+            street=StreetValue(event.street),
+            building=building_vo,
         )
 
     def delete(

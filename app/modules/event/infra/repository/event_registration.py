@@ -9,7 +9,7 @@ from modules.event.infra.dm.event_registration import IEventRegistrationDm
 from modules.event.infra.dm.user import IUserDm
 from modules.event.infra.mappers.event_registration import EventRegistrationMapper
 from modules.event.infra.pg.models import EventRegistrationOrm, UserEventOrm, EventOrm
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.infra.repository.alchemy import BaseAlchemyRepository
 
 

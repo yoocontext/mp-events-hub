@@ -12,7 +12,7 @@ from modules.event.domain.aggregate.user import User as UserEvent
 from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.value_objects.jwt import JwtTokenValue
 from seedwork.domain.value_objects.role import RoleValue
-from seedwork.infra.event_bus.base import IEventBus
+from seedwork.application.interface.event_bus import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 

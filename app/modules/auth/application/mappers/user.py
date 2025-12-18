@@ -4,7 +4,7 @@ from modules.auth.domain.aggregate.user import User
 from modules.auth.infra.pg.models.user import UserAuthOrm
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.mapper import BaseMapper
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.user import NameValue, GroupNumberValue, EmailValue
 
 

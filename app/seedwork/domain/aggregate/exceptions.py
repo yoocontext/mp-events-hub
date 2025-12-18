@@ -11,3 +11,9 @@ class AggregateException(
     @abstractmethod
     def message(self) -> str:
         return "Aggregate Exception"
+
+
+class AggregateAlreadyCreatedException(AggregateException):
+    @property
+    def message(self) -> str:
+        return "Агрегат уже создан, повторное создание запрещено"

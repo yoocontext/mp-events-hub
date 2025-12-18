@@ -7,7 +7,7 @@ from modules.event.domain.aggregate.exceptions import UserRoleNotAllowedExceptio
 from seedwork.domain.value_objects.exceptions import RoleValueException
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.aggregate.base import BaseAggregate
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 @dataclass
@@ -46,15 +46,6 @@ class User(BaseAggregate):
         if self.role not in (RoleValue.ORGANIZER, RoleValue.ADMIN):
             raise UserRoleNotAllowedException(self.role.value)
 
-        return Event.create(
-            created_by_user_id=self.id.value,
-            title=title,
-            scheduled_at=scheduled_at,
-            description=description,
-            image_id=image_id,
-            city=city,
-            street=street,
-            building_number=building_number,
-            block=block,
-            auditorium=auditorium,
-        )
+        event = Event()
+        event.create()
+        return event

@@ -2,7 +2,7 @@ from asyncpg.pgproto.pgproto import timedelta
 
 from modules.auth.application.interface.dm.kvalue.user import IUserKvDm
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.user import EmailValue
 from seedwork.infra.dm.base import BaseRedisDataMapper
 

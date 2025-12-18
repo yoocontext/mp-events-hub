@@ -7,7 +7,7 @@ from modules.event.domain.services.event_registration import (
     EventRegistrationService,
 )
 from seedwork.application.use_case import BaseUseCase
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 

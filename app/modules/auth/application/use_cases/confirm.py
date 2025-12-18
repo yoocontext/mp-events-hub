@@ -9,9 +9,9 @@ from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.value_object.confirm_code import ConfirmCodeValue
 from seedwork.application.use_case import BaseUseCase
 from seedwork.domain.events.base import DomainEvent
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.jwt import JwtTokenValue
-from seedwork.infra.event_bus.base import IEventBus
+from seedwork.application.interface.event_bus import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 

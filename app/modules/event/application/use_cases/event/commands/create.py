@@ -5,13 +5,13 @@ from uuid import UUID
 from modules.event.application.validators.event import EventImageValidator
 from modules.event.domain.aggregate.event import Event
 from modules.event.domain.aggregate.user import User
-from modules.event.domain.repository.event import IEventRepository
+from modules.event.domain.repository.event import EventRepository
 from modules.event.domain.repository.user import IUserRepository
 from seedwork.application.interface.s3.client import IS3Client
 from seedwork.application.use_case import BaseUseCase
 from seedwork.domain.services.authorization import AuthorizationService
 from seedwork.domain.uuid7 import uuid7_native
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.domain.value_objects.content_types import ContentType
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.value_objects.s3 import Bucket
@@ -45,7 +45,7 @@ class CreateEventUseCase(
     _authorization_service: AuthorizationService
     _image_meta_service: ImageMetadataService
     _user_repo: IUserRepository
-    _event_repo: IEventRepository
+    _event_repo: EventRepository
     _s3_client: IS3Client
     _event_image_validator: EventImageValidator
     _transactional_manager: ITransactionManager

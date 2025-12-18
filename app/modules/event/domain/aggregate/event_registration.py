@@ -3,7 +3,7 @@ from uuid import UUID
 
 from modules.event.domain.aggregate.exceptions import CannotUnregisterOtherEvent
 from seedwork.domain.aggregate.base import BaseAggregate
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 @dataclass

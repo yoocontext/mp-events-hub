@@ -9,7 +9,7 @@ from modules.auth.application.use_cases.register import RegisterUseCase
 from modules.auth.application.use_cases.reset_password import ResetPasswordUseCase
 from modules.auth.domain.repository.user import IUserRepository
 from modules.auth.domain.rules.user import UniqueEmailRule, UniqueUserRule
-from seedwork.infra.event_bus.base import IEventBus
+from seedwork.application.interface.event_bus import IEventBus
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
 

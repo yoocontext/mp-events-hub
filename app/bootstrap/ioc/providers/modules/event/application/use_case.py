@@ -11,7 +11,7 @@ from modules.event.application.use_cases.event.register_user import RegisterForE
 from modules.event.application.use_cases.event.unregister_user import UnregisterForEventUseCase
 from modules.event.application.use_cases.event.update import UpdateEventUseCase
 from modules.event.application.validators.event import EventImageValidator
-from modules.event.domain.repository.event import IEventRepository
+from modules.event.domain.repository.event import EventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from modules.event.domain.repository.user import IUserRepository
 from modules.event.domain.services.event_registration import EventRegistrationService
@@ -30,7 +30,7 @@ class UseCaseEventProvider(Provider):
         authorization_service: AuthorizationService,
         image_meta_service: ImageMetadataService,
         user_repo: IUserRepository,
-        event_repo: IEventRepository,
+        event_repo: EventRepository,
         s3_client: IS3Client,
         event_image_validator: EventImageValidator,
         transactional_manager: ITransactionManager,
@@ -49,7 +49,7 @@ class UseCaseEventProvider(Provider):
     def delete_event(
         self,
         s3_client: IS3Client,
-        event_repo: IEventRepository,
+        event_repo: EventRepository,
         user_repo: IUserRepository,
         transactional_manager: ITransactionManager,
     ) -> DeleteEventUseCase:
@@ -66,7 +66,7 @@ class UseCaseEventProvider(Provider):
         s3_client: IS3Client,
         image_metadata_service: ImageMetadataService,
         event_image_validator: EventImageValidator,
-        event_repo: IEventRepository,
+        event_repo: EventRepository,
         user_repo: IUserRepository,
         transactional_manager: ITransactionManager,
     ) -> UpdateEventUseCase:
@@ -94,7 +94,7 @@ class UseCaseEventProvider(Provider):
     def register_for_event(
         self,
         event_registration_service: EventRegistrationService,
-        event_repo: IEventRepository,
+        event_repo: EventRepository,
         user_repo: IUserRepository,
         event_registration_repo: IEventRegistrationRepository,
         transactional_manager: ITransactionManager,

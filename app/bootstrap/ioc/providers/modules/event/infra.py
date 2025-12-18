@@ -1,7 +1,7 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.event.domain.repository.event import IEventRepository
+from modules.event.domain.repository.event import EventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from modules.event.domain.repository.user import IUserRepository
 from modules.event.infra.dm.event import IEventDm, EventAlchemyDm
@@ -66,7 +66,7 @@ class RepositoryEventProvider(Provider):
         address_mapper: AddressMapper,
         event_dm: IEventDm,
         user_dm: IUserDm,
-    ) -> IEventRepository:
+    ) -> EventRepository:
         return EventAlchemyRepository(
             _session=session,
             _event_mapper=event_mapper,

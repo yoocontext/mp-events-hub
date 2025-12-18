@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from modules.event.domain.aggregate.user import User
 from seedwork.domain.repository import BaseRepository
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 class IUserRepository(

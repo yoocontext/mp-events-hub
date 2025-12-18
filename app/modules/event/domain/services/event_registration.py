@@ -6,7 +6,7 @@ from modules.event.domain.repository.event_registration import IEventRegistratio
 from modules.event.domain.rules.exceptions import UserAlreadyRegisteredException
 from modules.event.domain.aggregate.user import User
 from modules.event.domain.rules.event_registration import UserRegisteredEventRule
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 @dataclass

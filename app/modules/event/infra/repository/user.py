@@ -8,7 +8,7 @@ from modules.event.infra.pg.models import UserEventOrm
 from modules.event.domain.aggregate.user import User
 from modules.event.domain.repository.user import IUserRepository
 from seedwork.application.interface.dm.sql.roles import IRoleDm
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 from seedwork.infra.pg.excpetions import MissingRequiredFieldException
 from seedwork.infra.pg.models import RoleOrm
 from seedwork.infra.repository.alchemy import BaseAlchemyRepository

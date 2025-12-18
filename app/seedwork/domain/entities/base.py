@@ -9,12 +9,13 @@ from datetime import (
 )
 
 from seedwork.domain.uuid7 import uuid7_native
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 @dataclass(
     kw_only=True,
     slots=True,
+    init=False,
 )
 class Entity(ABC):
     id: EntityIdValue = field(
@@ -39,6 +40,7 @@ class Entity(ABC):
 @dataclass(
     kw_only=True,
     slots=True,
+    init=False,
 )
 class TimestampEntity(
     Entity,

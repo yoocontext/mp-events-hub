@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from seedwork.domain.rules import BusinessRule
-from seedwork.domain.value_objects.common.entity import EntityIdValue
+from seedwork.domain.value_objects.common.aggregate import EntityIdValue
 
 
 @dataclass

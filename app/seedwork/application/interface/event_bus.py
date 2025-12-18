@@ -14,4 +14,3 @@ class IEventBus(ABC):
         events: list[DomainEvent],
     ) -> None:
         ...
-
