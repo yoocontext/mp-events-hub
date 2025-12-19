@@ -17,23 +17,23 @@ from starlette.status import (
     HTTP_409_CONFLICT,
 )
 
-from modules.event.application.use_cases.event.create import (
+from modules.event.application.use_cases.event.commands.create import (
     CreateEventUseCase,
     CreateEventCommand,
 )
-from modules.event.application.use_cases.event.register_user import (
+from modules.event.application.use_cases.event.commands.register_user import (
     RegisterForEventUseCase,
     RegisterForEventCommand,
 )
-from modules.event.application.use_cases.event.delete import (
+from modules.event.application.use_cases.event.commands.delete import (
     DeleteEventUseCase,
     DeleteEventCommand,
 )
-from modules.event.application.use_cases.event.unregister_user import (
+from modules.event.application.use_cases.event.commands.unregister_user import (
     UnregisterForEventUseCase,
     UnregisterForEventCommand,
 )
-from modules.event.application.use_cases.event.update import (
+from modules.event.application.use_cases.event.commands.update import (
     UpdateEventUseCase,
     UpdateEventCommand,
 )
