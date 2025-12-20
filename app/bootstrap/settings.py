@@ -104,6 +104,15 @@ class MinioSettings(BaseSettings):
     endpoint_url: str = Field(default="endpoint", alias="MINIO__ENDPOINT_URL")
 
 
+class ElasticSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
+        extra="ignore",
+    )
+
+    host: str = Field(alias="ELASTIC__HOST", default="ELC_HOST")
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parents[2] / ".dev.env"),
@@ -114,6 +123,7 @@ class Settings(BaseSettings):
     rmq: RmqSettings = RmqSettings()
     redis: RedisSettings = RedisSettings()
     minio: MinioSettings = MinioSettings()
+    elastic: ElasticSettings = ElasticSettings()
     auth: AuthSettings = AuthSettings()
     email: EmailSettings = EmailSettings()
 
