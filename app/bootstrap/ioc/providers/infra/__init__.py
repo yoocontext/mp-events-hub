@@ -1,3 +1,4 @@
+from .elastic import ElasticSearchProvider
 from .pg import AlchemyProvider
 from .event_bus import EventBusProvider
 from .faststream import FastStreamProvider
@@ -9,6 +10,7 @@ from .s3 import (
 
 
 __all__ = (
+    "ElasticSearchProvider",
     "AlchemyProvider",
     "EventBusProvider",
     "FastStreamProvider",

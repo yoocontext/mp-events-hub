@@ -10,6 +10,7 @@ from .infra import (
     DmEventProvider,
     MapperEventProvider,
     RepositoryEventProvider,
+    EventProjectionProvider,
 )
 
 
@@ -21,4 +22,5 @@ __all__ = (
     "DmEventProvider",
     "MapperEventProvider",
     "RepositoryEventProvider",
+    "EventProjectionProvider",
 )

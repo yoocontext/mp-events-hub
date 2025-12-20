@@ -9,6 +9,7 @@ from bootstrap.ioc.providers.bootstrap import(
     SettingProvider,
 )
 from bootstrap.ioc.providers.infra import (
+    ElasticSearchProvider,
     AlchemyProvider,
     EventBusProvider,
     FastStreamProvider,
@@ -37,6 +38,7 @@ from bootstrap.ioc.providers.modules.event import (
     ValidatorProvider,
     DmEventProvider,
     RepositoryEventProvider,
+    EventProjectionProvider,
 )
 from bootstrap.ioc.providers.seedwork import (
     TransactionManagerProvider,
@@ -46,6 +48,7 @@ from bootstrap.ioc.providers.seedwork import (
 
 DEV_PROVIDERS: list[Provider] = [
     SettingProvider(),
+    ElasticSearchProvider(),
     AlchemyProvider(),
     EventBusProvider(),
     FastStreamProvider(),
@@ -68,6 +71,7 @@ DEV_PROVIDERS: list[Provider] = [
     ValidatorProvider(),
     DmEventProvider(),
     RepositoryEventProvider(),
+    EventProjectionProvider(),
     TransactionManagerProvider(),
     ServiceDomainProvider(),
     FastapiProvider(),

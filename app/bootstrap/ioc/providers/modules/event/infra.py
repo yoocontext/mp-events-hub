@@ -1,12 +1,15 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
+from elasticsearch import AsyncElasticsearch
 
+from modules.event.application.interfaces.projection_services import IEventProjectionService
 from modules.event.domain.repository.event import IEventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
 from modules.event.domain.repository.user import IUserRepository
 from modules.event.infra.dm.event import IEventDm, EventAlchemyDm
 from modules.event.infra.dm.event_registration import IEventRegistrationDm, EventRegistrationAlchemyDm
 from modules.event.infra.dm.user import IUserDm, UserAlchemyDm
+from modules.event.infra.elastic.projection_services.event import EventProjectionElcService
 from modules.event.infra.mappers.address import AddressMapper, BuildingMapper
 from modules.event.infra.mappers.event import EventMapper
 from modules.event.infra.mappers.event_registration import EventRegistrationMapper
@@ -125,3 +128,16 @@ class MapperEventProvider(Provider):
     @provide
     def event_registration(self) -> EventRegistrationMapper:
         return EventRegistrationMapper()
+
+
+class EventProjectionProvider(Provider):
+    scope = Scope.REQUEST
+
+    @provide
+    def event(
+        self,
+        elastic: AsyncElasticsearch,
+    ) -> IEventProjectionService:
+        return EventProjectionElcService(
+            _elc=elastic,
+        )

@@ -1,15 +1,28 @@
 from dishka import Provider, Scope, provide
 
-from modules.event.application.use_cases.event.create import (
+from modules.event.application.interfaces.projection_services import IEventProjectionService
+from modules.event.application.use_cases.event.commands.create import (
     CreateEventUseCase,
 )
 from modules.event.application.use_cases.auth.confirm import (
     ConfirmRegisterUseCase,
 )
-from modules.event.application.use_cases.event.delete import DeleteEventUseCase
-from modules.event.application.use_cases.event.register_user import RegisterForEventUseCase
-from modules.event.application.use_cases.event.unregister_user import UnregisterForEventUseCase
-from modules.event.application.use_cases.event.update import UpdateEventUseCase
+from modules.event.application.use_cases.event.commands.delete import (
+    DeleteEventUseCase,
+)
+from modules.event.application.use_cases.event.commands.register_user import (
+    RegisterForEventUseCase,
+)
+from modules.event.application.use_cases.event.commands.unregister_user import (
+    UnregisterForEventUseCase,
+)
+from modules.event.application.use_cases.event.commands.update import (
+    UpdateEventUseCase,
+)
+from modules.event.application.use_cases.event.queries.events import (
+    GetEventProjectionUseCase,
+)
+from modules.event.application.use_cases.event.reactors.create_event import CreateEventElasticUseCase
 from modules.event.application.validators.event import EventImageValidator
 from modules.event.domain.repository.event import IEventRepository
 from modules.event.domain.repository.event_registration import IEventRegistrationRepository
@@ -17,6 +30,7 @@ from modules.event.domain.repository.user import IUserRepository
 from modules.event.domain.services.event_registration import EventRegistrationService
 from seedwork.application.interface.s3.client import IS3Client
 from seedwork.domain.services.authorization import AuthorizationService
+from seedwork.infra.event_bus.base import IEventBus
 from seedwork.infra.s3.services.image_metadata import ImageMetadataService
 from seedwork.infra.transaction_manager.base import ITransactionManager
 
@@ -34,6 +48,7 @@ class UseCaseEventProvider(Provider):
         s3_client: IS3Client,
         event_image_validator: EventImageValidator,
         transactional_manager: ITransactionManager,
+        event_bus: IEventBus,
     ) -> CreateEventUseCase:
         return CreateEventUseCase(
             _authorization_service=authorization_service,
@@ -43,6 +58,7 @@ class UseCaseEventProvider(Provider):
             _s3_client=s3_client,
             _event_image_validator=event_image_validator,
             _transactional_manager=transactional_manager,
+            _event_bus=event_bus,
         )
 
     @provide
@@ -118,4 +134,22 @@ class UseCaseEventProvider(Provider):
             _event_registration_service=event_registration_service,
             _event_registration_repo=event_registration_repo,
             _transactional_manager=transactional_manager,
+        )
+
+    @provide
+    def get_events(
+        self,
+        projection_service: IEventProjectionService,
+    ) -> GetEventProjectionUseCase:
+        return GetEventProjectionUseCase(
+            _event_query_service=projection_service,
+        )
+
+    @provide
+    def create_event_elastic(
+        self,
+        event_projection_service: IEventProjectionService,
+    ) -> CreateEventElasticUseCase:
+        return CreateEventElasticUseCase(
+            _event_projection_service=event_projection_service,
         )
