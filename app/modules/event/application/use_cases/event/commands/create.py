@@ -9,12 +9,14 @@ from modules.event.domain.repository.event import IEventRepository
 from modules.event.domain.repository.user import IUserRepository
 from seedwork.application.interface.s3.client import IS3Client
 from seedwork.application.use_case import BaseUseCase
+from seedwork.domain.events.base import DomainEvent
 from seedwork.domain.services.authorization import AuthorizationService
 from seedwork.domain.uuid7 import uuid7_native
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.content_types import ContentType
 from seedwork.domain.value_objects.role import RoleValue
 from seedwork.domain.value_objects.s3 import Bucket
+from seedwork.infra.event_bus.base import IEventBus
 from seedwork.infra.s3.services.image_metadata import (
     ImageMetadataService,
     ImageMetadataSchema,
@@ -49,6 +51,7 @@ class CreateEventUseCase(
     _s3_client: IS3Client
     _event_image_validator: EventImageValidator
     _transactional_manager: ITransactionManager
+    _event_bus: IEventBus
 
     async def act(self, command: CreateEventCommand) -> Event:
         user: User = await self._user_repo.get_by_id(
@@ -91,7 +94,9 @@ class CreateEventUseCase(
         )
 
         await self._event_repo.create(event=event)
-
         await self._transactional_manager.commit()
+
+        events: list[DomainEvent] = event.pull_events()
+        await self._event_bus.publish(events=events)
 
         return event

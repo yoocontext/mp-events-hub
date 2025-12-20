@@ -1,0 +1,96 @@
+{
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "eng_to_rus": {
+          "type": "mapping",
+          "mappings": [
+            "shch=>щ", "yo=>ё", "yu=>ю", "ya=>я", "ch=>ч", "sh=>ш", "ye=>е",
+            "a=>а", "b=>б", "v=>в", "g=>г", "d=>д", "e=>е", "z=>з", "i=>и",
+            "y=>й", "k=>к", "l=>л", "m=>м", "n=>н", "o=>о", "p=>п", "r=>р",
+            "s=>с", "t=>т", "f=>ф", "h=>х", "c=>ц"
+          ]
+        }
+      },
+      "analyzer": {
+        "translit_analyzer": {
+          "tokenizer": "standard",
+          "char_filter": ["eng_to_rus"],
+          "filter": ["lowercase"]
+        },
+        "russian_stemmer_analyzer": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stop", "russian_stemmer"]
+        }
+      }
+      ,
+      "filter": {
+        "russian_stop": { "type": "stop", "stopwords": "_russian_" },
+        "russian_stemmer": { "type": "stemmer", "language": "russian" }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+      "title": {
+        "type": "text",
+        "fields": {
+          "translit": {
+            "type": "text",
+            "analyzer": "translit_analyzer",
+            "search_analyzer": "translit_analyzer"
+          },
+          "stem": {
+            "type": "text",
+            "analyzer": "russian_stemmer_analyzer",
+            "search_analyzer": "russian_stemmer_analyzer"
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "fields": {
+          "translit": {
+            "type": "text",
+            "analyzer": "translit_analyzer",
+            "search_analyzer": "translit_analyzer"
+          },
+          "stem": {
+            "type": "text",
+            "analyzer": "russian_stemmer_analyzer",
+            "search_analyzer": "russian_stemmer_analyzer"
+          }
+        }
+      },
+      "created_by_fullname": {
+        "type": "text",
+        "fields": {
+          "translit": {
+            "type": "text",
+            "analyzer": "translit_analyzer",
+            "search_analyzer": "translit_analyzer"
+          },
+          "stem": {
+            "type": "text",
+            "analyzer": "russian_stemmer_analyzer",
+            "search_analyzer": "russian_stemmer_analyzer"
+          }
+        }
+      },
+      "created_by_id": { "type": "keyword" },
+      "scheduled_at": { "type": "date" },
+      "address": {
+        "properties": {
+          "city": { "type": "text", "copy_to": "full_address" },
+          "street": { "type": "text", "copy_to": "full_address" },
+          "building_number": { "type": "integer", "copy_to": "full_address" },
+          "block": { "type": "text", "copy_to": "full_address" },
+          "auditorium": { "type": "text", "copy_to": "full_address" }
+        }
+      },
+      "full_address": { "type": "text" },
+      "image_id": { "type": "keyword" }
+    }
+  }
+}
