@@ -23,7 +23,7 @@ from modules.event.domain.value_objects.event import (
 )
 from modules.event.domain.value_objects.exceptions import EventInPastException
 from seedwork.domain.aggregate.base import BaseAggregate
-from seedwork.domain.events.events import DeleteEventEvent
+from seedwork.domain.events.events import DeleteEventEvent, CreateEventEvent
 from seedwork.domain.marker import EMPTY
 from seedwork.domain.value_objects.common.entity import EntityIdValue
 from seedwork.domain.value_objects.role import RoleValue
@@ -86,7 +86,7 @@ class Event(BaseAggregate):
                 building=building_vo,
             )
 
-        return Event(
+        event = Event(
             created_by_user_id=EntityIdValue(created_by_user_id),
             title=TitleValue(title),
             scheduled_at=ScheduledAtValue(scheduled_at),
@@ -94,6 +94,25 @@ class Event(BaseAggregate):
             description=DescriptionValue(description),
             image_id=S3IdValue(image_id),
         )
+
+        create_event = CreateEventEvent(
+            id=event.id.value,
+            created_at=event.created_at,
+            created_by_user_id=event.created_by_user_id.value,
+            title=event.title.value,
+            scheduled_at=event.scheduled_at.value,
+            description=event.description.value,
+            image_id=event.image_id.value,
+            city=city,
+            street=street,
+            building_number=building_number,
+            block=block,
+            auditorium=auditorium,
+        )
+
+        event.register_event(event=create_event)
+
+        return event
 
     def delete(
         self,
