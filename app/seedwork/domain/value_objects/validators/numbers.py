@@ -9,3 +9,11 @@ def is_positive(value: ValueType) -> None:
 
     if value <= 0:
         raise NotPositiveNumberException(value=value)
+
+
+def is_non_negative(value: ValueType) -> None:
+    if not isinstance(value, Number):
+        raise InvalidNumberTypeException()
+
+    if value < 0:
+        raise NotPositiveNumberException(value=value)
