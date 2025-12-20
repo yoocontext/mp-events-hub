@@ -7,6 +7,7 @@ DB = docker_compose/pg.yaml
 RMQ = docker_compose/rmq.yaml
 REDIS = docker_compose/redis.yaml
 MINIO = docker_compose/minio.yaml
+ELASTIC = docker_compose/elastic.yaml
 
 .PHONY: app
 app:
@@ -45,12 +46,18 @@ redis:
 redis-down:
 	${DC} -f ${REDIS} ${ENV} down
 
-
 .PHONY: minio
 minio:
 	${DC} -f ${MINIO} ${ENV} up
 
-
 .PHONY: minio-down
 minio-down:
 	${DC} -f ${MINIO} ${ENV} down
+
+.PHONY: elastic
+elastic:
+	${DC} -f ${ELASTIC} ${ENV} up
+
+.PHONY: elastic-down
+elastic-down:
+	${DC} -f ${ELASTIC} ${ENV} down
