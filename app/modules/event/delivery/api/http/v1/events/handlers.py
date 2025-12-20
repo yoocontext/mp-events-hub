@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Annotated
 from uuid import UUID
 
 from dishka.integrations.fastapi import (
@@ -6,7 +7,7 @@ from dishka.integrations.fastapi import (
     FromDishka,
     inject,
 )
-from fastapi import APIRouter, Depends, UploadFile, Form
+from fastapi import APIRouter, Depends, UploadFile, Form, Query
 from starlette.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -17,6 +18,7 @@ from starlette.status import (
     HTTP_409_CONFLICT,
 )
 
+from modules.event.application.projections.event import EventProjection
 from modules.event.application.use_cases.event.commands.create import (
     CreateEventUseCase,
     CreateEventCommand,
@@ -37,10 +39,18 @@ from modules.event.application.use_cases.event.commands.update import (
     UpdateEventUseCase,
     UpdateEventCommand,
 )
+from modules.event.application.use_cases.event.queries.events import (
+    GetEventProjectionUseCase,
+    GetEventProjectionCommand,
+)
+from modules.event.delivery.api.http.v1.events.mappers import (
+    event_projections_to_out_schema,
+)
 from modules.event.delivery.api.http.v1.events.schemas import (
     CreateEventOutSchema,
     RegisterForEventOutSchema,
     UpdateEventOutSchema,
+    GetEventOutSchema,
 )
 from modules.event.domain.aggregate.event import Event
 from modules.event.domain.aggregate.event_registration import EventRegistration
@@ -48,19 +58,12 @@ from seedwork.delivery.api.http.schemas import ErrorSchema
 from seedwork.delivery.jwt_utils import get_user_id
 from seedwork.domain.marker import EMPTY
 
-register_router = APIRouter(
-    prefix="/events",
-    tags=["Events", "Register"],
-    route_class=DishkaRoute,
-)
-
 
 router = APIRouter(
     prefix="/events",
     tags=["Events"],
     route_class=DishkaRoute,
 )
-router.include_router(register_router)
 
 
 
@@ -188,7 +191,7 @@ async def update_event(
     )
 
 
-@register_router.post(
+@router.post(
     path="/{event_id}/registrations",
     response_model=RegisterForEventOutSchema,
     status_code=HTTP_201_CREATED,
@@ -220,7 +223,7 @@ async def register_for_event(
     )
 
 
-@register_router.delete(
+@router.delete(
     path="/{event_id}/registrations",
     response_model=None,
     status_code=HTTP_204_NO_CONTENT,
@@ -245,3 +248,46 @@ async def unregister_for_event(
     )
 
     await use_case.act(command)
+
+
+@router.get(
+    path="",
+    response_model=GetEventOutSchema,
+    status_code=HTTP_200_OK,
+    summary="Get events",
+    responses={
+        HTTP_200_OK: {"model": GetEventOutSchema, "description": "Get events"},
+        HTTP_400_BAD_REQUEST: {"model": ErrorSchema, "description": "Invalid input"},
+        HTTP_401_UNAUTHORIZED: {"model": ErrorSchema, "description": "Unauthorized"},
+        HTTP_404_NOT_FOUND: {"model": ErrorSchema, "description": "Resource not found"},
+        HTTP_409_CONFLICT: {"model": ErrorSchema, "description": "Conflict rules"},
+    }
+)
+@inject
+async def get_events(
+    use_case: FromDishka[GetEventProjectionUseCase],
+    query: Annotated[str | None, "Full-text search query"] = Query(default=None),
+    event_id: UUID | None = Query(default=None),
+    created_by_user_id: UUID | None = Query(default=None),
+    start_date: datetime | None = Query(default=None),
+    end_date: datetime | None = Query(default=None),
+    is_active: bool = Query(default=True),
+    limit: int | None = Query(default=25),
+    offset: int | None = Query(default=0),
+) -> GetEventOutSchema:
+    command = GetEventProjectionCommand(
+        query=query,
+        event_id=event_id,
+        created_by_user_id=created_by_user_id,
+        limit=limit,
+        offset=offset,
+    )
+
+    event_projections: list[EventProjection] = await (
+        use_case.act(command=command)
+    )
+    result: GetEventOutSchema = event_projections_to_out_schema(
+        projections=event_projections,
+    )
+
+    return result
